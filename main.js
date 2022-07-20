@@ -32,7 +32,7 @@ function syntaxHighlight(json) {
 
 function btnClick(label) {
     dataLayer.push({
-        event: "click",
+        event: "click_btn",
         event_info: {
             event_category: "button",
             event_label: label,
