@@ -38,5 +38,12 @@ function btnClick(label) {
             event_label: label,
         },
     });
+    dataLayer.push({
+        event: "click_btn22",
+        event_info: {
+            event_category: "button22",
+            event_label: label + "22",
+        },
+    });
     output();
 }
