@@ -114,4 +114,5 @@ function purchase() {
             ],
         },
     });
+    output();
 }
