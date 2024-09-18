@@ -1,4 +1,102 @@
-output();
+window.onload = function() {
+    output();
+    var target = "Adobe Target library NOT FOUND"
+    if (typeof adobe !== 'undefined' && adobe?.target != null) {
+        target = syntaxHighlight(JSON.stringify(adobe?.target || "", undefined, 4));
+    }
+    document.getElementById("TARGET").innerHTML = target + "<br>";
+
+    // document.addEventListener(adobe.target?.event.REQUEST_SUCCEEDED, function(e) {
+    //     var tokens = e.detail.responseTokens;
+
+    //     if (isEmpty(tokens)) {
+    //         return;
+    //     }
+
+    //     var activityNames = [];
+    //     var experienceNames = [];
+    //     var uniqueTokens = distinct(tokens);
+
+    //     uniqueTokens.forEach(function(token) {
+    //         activityNames.push(token["activity.name"]);
+    //         experienceNames.push(token["experience.name"]);
+    //     });
+
+    //     var d = {'eventCategory': 'target',
+    //         'eventAction': experienceNames, 'eventLabel': activityNames
+    //     };
+    //     console.log(d)
+
+    //     document.getElementById("TARGET_ACTIVITIES").innerHTML = syntaxHighlight(JSON.stringify(d || "", undefined, 4));
+    // });
+
+    // function isEmpty(val) {
+    //     return (val === undefined || val == null || val.length <= 0) ? true : false;
+    // }
+
+    // function key(obj) {
+    //     return Object.keys(obj)
+    //     .map(function(k) { return k + "" + obj[k]; })
+    //     .join("");
+    // }
+
+    // function distinct(arr) {
+    //     var result = arr.reduce(function(acc, e) {
+    //         acc[key(e)] = e;
+    //         return acc;
+    //     }, {});
+
+    //     return Object.keys(result)
+    //     .map(function(k) { return result[k]; });
+    // }
+
+    document.addEventListener(adobe.target.event.REQUEST_SUCCEEDED, function (e) {
+        window.ttMETA= typeof(window.ttMETA)!="undefined" ? window.ttMETA : [];
+    
+        var tokens=e.detail.responseTokens;
+    
+        if (isEmpty(tokens)) {
+          return;
+        }
+    
+        var uniqueTokens = distinct(tokens);
+    
+        uniqueTokens.forEach(function(token) {
+          window.ttMETA.push({
+            'CampaignName': token["activity.name"],
+            'CampaignId' : token["activity.id"],
+            'RecipeName': token["experience.name"],
+            'RecipeId': token["experience.id"],
+            'OfferId': token["offer.id"],
+            'OfferName': token["offer.name"],
+            'MboxName': e.detail.mbox});
+          console.log(ttMETA);
+
+          document.getElementById("TARGET_ACTIVITIES").innerHTML = syntaxHighlight(JSON.stringify(ttMETA || "", undefined, 4));
+        });
+      });
+    
+      function isEmpty(val){
+        return (val === undefined || val == null || val.length <= 0) ? true : false;
+      }
+    
+      function key(obj) {
+         return Object.keys(obj)
+        .map(function(k) { return k + "" + obj[k]; })
+        .join("");
+      }
+    
+      function distinct(arr) {
+        var result = arr.reduce(function(acc, e) {
+          acc[key(e)] = e;
+          return acc;
+        }, {});
+    
+        return Object.keys(result)
+        .map(function(k) { return result[k]; });
+      }
+
+};
 
 function output() {
     var hDL = syntaxHighlight(JSON.stringify(dataLayer, undefined, 4));
